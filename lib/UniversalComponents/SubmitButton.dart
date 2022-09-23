@@ -13,7 +13,6 @@ class SubmitButton extends StatefulWidget {
 }
 
 class _SubmitButton extends State<SubmitButton> {
-  Color primaryColour = Colors.black;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -29,7 +28,12 @@ class _SubmitButton extends State<SubmitButton> {
           child: Container(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Text(widget.label),
+              child: Text(
+                widget.label,
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall
+              ),
             ),
           ),
         ),
@@ -37,5 +41,3 @@ class _SubmitButton extends State<SubmitButton> {
     );
   }
 }
-
-Color accentColour = Colors.grey.shade200;

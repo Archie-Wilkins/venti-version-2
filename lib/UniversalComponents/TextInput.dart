@@ -7,8 +7,7 @@ class TextInput extends StatelessWidget {
   final void Function(String?)? onSaved;
   final bool isPassword;
   final bool isEmail;
-  Color primaryColour = Colors.black;
-  Color accentColour = Colors.grey.shade200;
+  final TextInputAction textInputAction;
 
   TextInput({
     required this.label,
@@ -17,6 +16,7 @@ class TextInput extends StatelessWidget {
     required this.onSaved,
     this.isPassword = false,
     this.isEmail = false,
+    this.textInputAction = TextInputAction.done,
   });
 
   @override
@@ -24,28 +24,15 @@ class TextInput extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: TextFormField(
+        style: Theme.of(context).textTheme.labelMedium,
         decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(
-              width: 0,
-              style: BorderStyle.none,
-            ),
-          ),
-          filled: true,
-          fillColor: accentColour,
           label: Text(label),
-          labelStyle: TextStyle(
-            color: primaryColour,
-          ),
           hintText: hintText,
-          // focusedBorder: UnderlineInputBorder(
-          //   borderSide: const BorderSide(color: Colors.purpleAccent),
-          // ),
         ),
         obscureText: isPassword ? true : false,
         validator: validator,
         onSaved: onSaved,
+        textInputAction: textInputAction,
       ),
     );
   }

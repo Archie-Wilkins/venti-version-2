@@ -5,9 +5,12 @@ import 'package:Venti/Services/SecurePreferencesService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lottie/lottie.dart';
+import '../Services/NavigationService.dart';
 import '../UniversalComponents/LoadingButton.dart';
 import '../UniversalComponents/SubmitButton.dart';
 import '../UniversalComponents/TextInput.dart';
+import 'SignUpView.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -23,23 +26,6 @@ class _LoginViewState extends State<LoginView> {
   SecurePreferencesService _storageService = SecurePreferencesService();
   String errorMessage = "";
 
-  void initState() {
-    super.initState();
-    print("Getting user logged in");
-    getUserLoggedIn();
-    print("user logged in");
-  }
-
-  void getUserLoggedIn() async {
-    bool loggedIn = await _storageService.containsKeyInSecureData("authToken");
-    if (loggedIn) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomeView()),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,11 +35,15 @@ class _LoginViewState extends State<LoginView> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 60.0),
+              padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 130.0),
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: <Widget>[
+                    Lottie.network(
+                      'https://assets8.lottiefiles.com/packages/lf20_gjRCmXyruI.json',
+                      height: 200,
+                    ),
                     const Text(
                       "Log In",
                       style:
@@ -112,10 +102,7 @@ class _LoginViewState extends State<LoginView> {
                                 _formKey.currentState!.save();
                                 int responseCode = await signInRequest();
                                 if (responseCode == 200) {
-                                  print("Redirecting");
-                                  Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(
-                                          builder: (context) => HomeView()));
+                                  redirectToHome();
                                 }
                               }
                               ;
@@ -125,6 +112,16 @@ class _LoginViewState extends State<LoginView> {
                         if (_isLoading == true) LoadingButton(),
                       ],
                     ),
+                    //Go to sign up
+                    GestureDetector(
+                        onTap: redirectToSignUp,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
+                          child: Text(
+                            "Don't have an account? Sign up here",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        )),
                   ],
                 ),
               ),
@@ -156,9 +153,8 @@ class _LoginViewState extends State<LoginView> {
     _stopLoading();
 
     if (response.statusCode == 200) {
-      final SecureStorage storageItem =
-          SecureStorage("authToken", response.body);
-      await _storageService.writeSecureData(storageItem);
+      //call authentication service
+      //redirect
     } else if (response.statusCode == 404) {
       setErrorMessage("Whoops something went wrong, please try again");
       //Todo log error somewhere
@@ -176,5 +172,13 @@ class _LoginViewState extends State<LoginView> {
     setState(() {
       errorMessage = message;
     });
+  }
+
+  void redirectToSignUp() async {
+    NavigationService.goToSignUpView();
+  }
+
+  void redirectToHome() async {
+    NavigationService.goToHomeView();
   }
 }

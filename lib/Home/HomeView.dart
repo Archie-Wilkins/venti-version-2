@@ -1,8 +1,9 @@
-import 'package:Venti/Login/LoginView.dart';
+import 'package:Venti/Services/SecurePreferencesService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../Services/SecurePreferencesService.dart';
+import '../Services/NavigationService.dart';
+import 'EventInvitesView.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -10,37 +11,66 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  int _selectedIndex = 0;
   SecurePreferencesService _storageService = SecurePreferencesService();
-  String errorMessage = "";
 
   void initState() {
     super.initState();
-    print("Getting user logged in");
-    getUserLoggedIn();
-    print("user logged in");
+    checkUserAuthenticated();
   }
 
-  void getUserLoggedIn() async {
+  void checkUserAuthenticated() async {
     bool loggedIn = await _storageService.containsKeyInSecureData("authToken");
-    print("Is user logged in");
-    print(loggedIn);
     if (!loggedIn) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => LoginView()),
-      );
+      NavigationService.goToLoginView();
     }
+  }
+
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static final List<Widget> _widgetOptions = <Widget>[
+    //Home dashboard
+    Text("Events"),
+    //Create new events
+    Text("Create New Event"),
+
+    //Users invited events
+    EventInvitesView()
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: SafeArea(
-        child: Column(
-          children: <Widget>[
-            Text("Hello"),
-          ],
-        ),
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'New Event',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            label: 'Invites',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.purpleAccent,
+        onTap: _onItemTapped,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
       ),
     );
   }
