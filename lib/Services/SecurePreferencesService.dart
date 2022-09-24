@@ -22,8 +22,8 @@ class SecurePreferencesService {
     return readData;
   }
 
-  Future<void> deleteSecureData(SecureStorage item) async {
-    await _secureStorage.delete(key: item.key, aOptions: _getAndroidOptions());
+  Future<void> deleteSecureData(String item) async {
+    await _secureStorage.delete(key: item, aOptions: _getAndroidOptions());
   }
 
   Future<bool> containsKeyInSecureData(String key) async {

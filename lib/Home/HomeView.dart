@@ -1,3 +1,4 @@
+import 'package:Venti/Home/UsersEventsView.dart';
 import 'package:Venti/Services/SecurePreferencesService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class _HomeViewState extends State<HomeView> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static final List<Widget> _widgetOptions = <Widget>[
     //Home dashboard
-    Text("Events"),
+    UsersEventsView(),
     //Create new events
     Text("Create New Event"),
 
